@@ -28,7 +28,6 @@ a certain structure. Lets say you have some variables named `a_0`, `a_1` and
 `a_2` but you instead want to rename them to `x`, `y` and `z`. Using builtin
 methods there are a few ways to do that (and maybe more which I don’t know):
 
-
 - Do the replacements one by one manually.
 - Do the first replacement and then edit the command in the command-line window (`q:`).
 - Come up with some complex regex.
@@ -53,7 +52,6 @@ with `muren`.
 
 
 FEATURES                                      *muren.nvim-muren.nvim-features*
-
 
 - Define and apply multiple replacements.
 - Toggle between simple and 2-step replacements (eg to swap names), see |muren.nvim-showcases|.
@@ -81,7 +79,6 @@ USAGE                                            *muren.nvim-muren.nvim-usage*
 
 By default the following commands are created:
 
-
 - `MurenToggle`: Toggle the UI.
 - `MurenOpen`: Open the UI.
 - `MurenClose`: Open the UI.
@@ -100,7 +97,6 @@ See below for how to configure there.
 Pass `create_commands = false` to `require('muren').setup` to not create them.
 
 You can also access this using lua as the following functions:
-
 
 - `require('muren.api').toggle_ui`
 - `require('muren.api').open_ui`
