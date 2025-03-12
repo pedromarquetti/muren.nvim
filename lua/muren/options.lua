@@ -5,6 +5,7 @@ local win_width = vim.api.nvim_win_get_width(curr_window)
 local win_heigth = vim.api.nvim_win_get_height(curr_window)
 
 M.default = {
+<<<<<<< HEAD
 	-- general
 	create_commands = true,
 	filetype_in_preview = true,
@@ -57,6 +58,113 @@ M.default = {
 			},
 		},
 	},
+||||||| parent of 7f46c01 (UI implementation (new commit, without changes in formatting))
+  -- general
+  create_commands = true,
+  filetype_in_preview = true,
+  -- default togglable options
+  two_step = false,
+  all_on_line = true,
+  preview = true,
+  cwd = false,
+  files = '**/*',
+  -- keymaps
+  keys = {
+    close = 'q',
+    toggle_side = '<Tab>',
+    toggle_options_focus = '<C-s>',
+    toggle_option_under_cursor = '<CR>',
+    scroll_preview_up = '<Up>',
+    scroll_preview_down = '<Down>',
+    do_replace = '<CR>',
+    do_undo = '<localleader>u',
+    do_redo = '<localleader>r',
+  },
+  -- ui sizes
+  patterns_width = 30,
+  patterns_height = 10,
+  options_width = 20,
+  preview_height = 12,
+  -- ui position
+  anchor = 'center',
+  vertical_offset = 0,
+  horizontal_offset = 0,
+  -- options order in ui
+  order = {
+    'buffer',
+    'dir',
+    'files',
+    'two_step',
+    'all_on_line',
+    'preview',
+  },
+  -- highlights used for options ui
+  hl = {
+    options = {
+      on = '@string',
+      off = '@variable.builtin',
+    },
+    preview = {
+      cwd = {
+        path = 'Comment',
+        lnum = 'Number',
+      },
+    },
+  },
+=======
+  -- general
+  create_commands = true,
+  filetype_in_preview = true,
+  -- default togglable options
+  two_step = false,
+  all_on_line = true,
+  preview = true,
+  cwd = false,
+  files = '**/*',
+  -- keymaps
+  keys = {
+    close = 'q',
+    toggle_side = '<Tab>',
+    toggle_options_focus = '<C-s>',
+    toggle_option_under_cursor = '<CR>',
+    scroll_preview_up = '<Up>',
+    scroll_preview_down = '<Down>',
+    do_replace = '<CR>',
+    do_undo = '<localleader>u',
+    do_redo = '<localleader>r',
+  },
+  -- ui sizes
+  patterns_width = math.floor(win_width * 0.25),
+  patterns_height = math.floor(win_heigth * 0.3),
+  options_width = 20,
+  preview_height = math.floor(win_heigth * 0.4),
+  -- ui position
+  anchor = 'center',
+  vertical_offset = 0,
+  horizontal_offset = 0,
+  -- options order in ui
+  order = {
+    'buffer',
+    'dir',
+    'files',
+    'two_step',
+    'all_on_line',
+    'preview',
+  },
+  -- highlights used for options ui
+  hl = {
+    options = {
+      on = '@string',
+      off = '@variable.builtin',
+    },
+    preview = {
+      cwd = {
+        path = 'Comment',
+        lnum = 'Number',
+      },
+    },
+  },
+>>>>>>> 7f46c01 (UI implementation (new commit, without changes in formatting))
 }
 
 M.update = function(opts)
@@ -80,6 +188,7 @@ local match_anchor_pattern = function(anchor, low, high, row_or_col)
 end
 
 M.populate = function(opts)
+<<<<<<< HEAD
 	for name, value in pairs(M.default) do
 		if M.values[name] == nil or opts.fresh then
 			M.values[name] = value
@@ -96,6 +205,41 @@ M.populate = function(opts)
 	M.values.horizontal_anchor = match_anchor_pattern(anchor, "left", "right", "col")
 	M.values.vertical_offset = opts.vertical_offset or M.default.vertical_offset
 	M.values.horizontal_offset = opts.horizontal_offset or M.default.horizontal_offset
+||||||| parent of 7f46c01 (UI implementation (new commit, without changes in formatting))
+  for name, value in pairs(M.default) do
+    if M.values[name] == nil or opts.fresh then
+      M.values[name] = value
+    end
+  end
+  local anchor = check_anchor_value(opts.anchor or M.default.anchor)
+  M.values.range = opts.range
+  M.values.buffer = vim.api.nvim_get_current_buf()
+  M.values.dir = vim.fn.getcwd()
+  M.values.ft = vim.api.nvim_get_current_buf()
+  M.values.total_width = 2 * M.values.patterns_width + M.values.options_width + 4
+  M.values.total_height = M.values.patterns_height + M.values.preview_height + 4
+  M.values.vertical_anchor = match_anchor_pattern(anchor, 'top', 'bottom', 'row')
+  M.values.horizontal_anchor = match_anchor_pattern(anchor, 'left', 'right', 'col')
+  M.values.vertical_offset = opts.vertical_offset or M.default.vertical_offset
+  M.values.horizontal_offset = opts.horizontal_offset or M.default.horizontal_offset
+=======
+  for name, value in pairs(M.default) do
+    if M.values[name] == nil or opts.fresh then
+      M.values[name] = value
+    end
+  end
+  local anchor = check_anchor_value(opts.anchor or M.default.anchor)
+  M.values.range = opts.range
+  M.values.buffer = vim.api.nvim_get_current_buf()
+  M.values.dir = vim.fn.getcwd()
+  M.values.ft = vim.api.nvim_get_current_buf()
+  M.values.total_width = 2 * M.values.patterns_width + M.values.options_width + 2
+  M.values.total_height = M.values.patterns_height + M.values.preview_height + 4
+  M.values.vertical_anchor = match_anchor_pattern(anchor, 'top', 'bottom', 'row')
+  M.values.horizontal_anchor = match_anchor_pattern(anchor, 'left', 'right', 'col')
+  M.values.vertical_offset = opts.vertical_offset or M.default.vertical_offset
+  M.values.horizontal_offset = opts.horizontal_offset or M.default.horizontal_offset
+>>>>>>> 7f46c01 (UI implementation (new commit, without changes in formatting))
 end
 
 return M

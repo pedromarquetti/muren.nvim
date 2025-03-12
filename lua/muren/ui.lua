@@ -138,6 +138,7 @@ local scroll_preview_down = function()
 end
 
 local format_cwd_preview_line = function(line, buf_info)
+<<<<<<< HEAD
 	local path = Path.new(buf_info.name):make_relative(vim.fn.getcwd())
 	-- NOTE a pity that make_relative does not return a new Path
 	path = Path.new(path):shorten()
@@ -156,6 +157,55 @@ local format_cwd_preview_line = function(line, buf_info)
 		},
 		text = string.format("%s (%d): %s", path, buf_info.lnum, line),
 	}
+||||||| parent of 7f46c01 (UI implementation (new commit, without changes in formatting))
+  local path = Path.new(buf_info.name):make_relative(vim.fn.getcwd())
+    -- NOTE a pity that make_relative does not return a new Path
+  path = Path.new(path):shorten()
+  return {
+    highlights = {
+      {
+        col_start = 0,
+        col_end = #path,
+        hl_group = options.values.hl.preview.cwd.path,
+      },
+      {
+        col_start = #path + 2,
+        col_end = #path + 2 + #string.format('%d', buf_info.lnum),
+        hl_group = options.values.hl.preview.cwd.lnum,
+      },
+    },
+    text = string.format(
+      '%s (%d): %s',
+      path,
+      buf_info.lnum,
+      line
+    )
+  }
+=======
+  local path = Path.new(buf_info.name):make_relative(vim.fn.getcwd())
+  -- NOTE a pity that make_relative does not return a new Path
+  path = Path.new(path):shorten()
+  return {
+    highlights = {
+      {
+        col_start = 0,
+        col_end = #path,
+        hl_group = options.values.hl.preview.cwd.path,
+      },
+      {
+        col_start = #path + 2,
+        col_end = #path + 2 + #string.format('%d', buf_info.lnum),
+        hl_group = options.values.hl.preview.cwd.lnum,
+      },
+    },
+    text = string.format(
+      '%s (%d): %s',
+      path,
+      buf_info.lnum,
+      line
+    )
+  }
+>>>>>>> 7f46c01 (UI implementation (new commit, without changes in formatting))
 end
 
 local update_preview = function()
@@ -198,6 +248,7 @@ local update_preview = function()
 	end
 	vim.api.nvim_set_current_buf(current_buf)
 
+<<<<<<< HEAD
 	vim.api.nvim_buf_set_lines(bufs.preview, 0, -1, true, relevant_lines)
 	search.do_replace_with_patterns(ui_lines.patterns, ui_lines.replacements, {
 		buffer = bufs.preview,
@@ -229,6 +280,69 @@ local update_preview = function()
 		end
 	end
 	buf_normal(bufs.preview, "gg")
+||||||| parent of 7f46c01 (UI implementation (new commit, without changes in formatting))
+  vim.api.nvim_buf_set_lines(bufs.preview, 0, -1, true, relevant_lines)
+  search.do_replace_with_patterns(
+    ui_lines.patterns,
+    ui_lines.replacements,
+    {
+      buffer = bufs.preview,
+      two_step = options.values.two_step,
+      all_on_line = options.values.all_on_line,
+      range = nil,
+    }
+  )
+  if options.values.cwd then
+    local prefixed_lines = {}
+    local highlights = {}
+    for i, buf_info in ipairs(buf_info_per_idx) do
+      local format_spec = format_cwd_preview_line(
+        vim.api.nvim_buf_get_lines(bufs.preview, i - 1, i, true)[1],
+        buf_info
+      )
+      table.insert(prefixed_lines, format_spec.text)
+      table.insert(highlights, format_spec.highlights)
+    end
+    vim.api.nvim_buf_set_lines(bufs.preview, 0, -1, true, prefixed_lines)
+    for line, hls in ipairs(highlights) do
+      for _, hl_spec in ipairs(hls) do
+        vim.api.nvim_buf_add_highlight(bufs.preview, -1, hl_spec.hl_group, line - 1, hl_spec.col_start, hl_spec.col_end)
+      end
+    end
+  end
+  buf_normal(bufs.preview, 'gg')
+=======
+  vim.api.nvim_buf_set_lines(bufs.preview, 0, -1, true, relevant_lines)
+  search.do_replace_with_patterns(
+    ui_lines.patterns,
+    ui_lines.replacements,
+    {
+    buffer = bufs.preview,
+    two_step = options.values.two_step,
+    all_on_line = options.values.all_on_line,
+    range = nil,
+    }
+  )
+  if options.values.cwd then
+    local prefixed_lines = {}
+    local highlights = {}
+    for i, buf_info in ipairs(buf_info_per_idx) do
+      local format_spec = format_cwd_preview_line(
+        vim.api.nvim_buf_get_lines(bufs.preview, i - 1, i, true)[1],
+        buf_info
+      )
+      table.insert(prefixed_lines, format_spec.text)
+      table.insert(highlights, format_spec.highlights)
+    end
+    vim.api.nvim_buf_set_lines(bufs.preview, 0, -1, true, prefixed_lines)
+    for line, hls in ipairs(highlights) do
+      for _, hl_spec in ipairs(hls) do
+        vim.api.nvim_buf_add_highlight(bufs.preview, -1, hl_spec.hl_group, line - 1, hl_spec.col_start, hl_spec.col_end)
+      end
+    end
+  end
+  buf_normal(bufs.preview, 'gg')
+>>>>>>> 7f46c01 (UI implementation (new commit, without changes in formatting))
 end
 
 local get_nvim_ui_size = function()
@@ -268,6 +382,7 @@ local make_ui_positions = function(opts)
 end
 
 local open_preview = function()
+<<<<<<< HEAD
 	if preview_open then
 		return
 	end
@@ -287,6 +402,46 @@ local open_preview = function()
 	vim.api.nvim_win_set_option(wins.preview, "wrap", false)
 	other_win[wins.preview] = wins.preview
 	preview_open = true
+||||||| parent of 7f46c01 (UI implementation (new commit, without changes in formatting))
+  if preview_open then
+    return
+  end
+  local ui_positions = make_ui_positions(options.values)
+  wins.preview = vim.api.nvim_open_win(bufs.preview, false, {
+    relative = 'editor',
+    width = options.values.total_width - 2,
+    height = options.values.preview_height,
+    row = ui_positions.preview.row,
+    col = ui_positions.preview.col,
+    style = 'minimal',
+    border = {"┏", "━" ,"┓", "┃", "┛", "━", "└", "┃"},
+    title = {{'preview', 'Comment'}},
+    title_pos = 'center',
+    zindex = 10,
+  })
+  vim.api.nvim_win_set_option(wins.preview, 'wrap', false)
+  preview_open = true
+=======
+  if preview_open then
+    return
+  end
+  local ui_positions = make_ui_positions(options.values)
+  wins.preview = vim.api.nvim_open_win(bufs.preview, false, {
+    relative = 'editor',
+    width = options.values.total_width,
+    height = options.values.preview_height,
+    row = ui_positions.preview.row,
+    col = ui_positions.preview.col,
+    style = 'minimal',
+    border = {"┏", "━" ,"┓", "┃", "┛", "━", "└", "┃"},
+    title = {{'preview', 'Comment'}},
+    title_pos = 'center',
+    zindex = 12,
+  })
+  vim.api.nvim_win_set_option(wins.preview, 'wrap', false)
+  other_win[wins.preview] = wins.preview
+  preview_open = true
+>>>>>>> 7f46c01 (UI implementation (new commit, without changes in formatting))
 end
 
 local close_preview = function()
@@ -298,6 +453,7 @@ local close_preview = function()
 end
 
 local toggle_option_under_cursor = function()
+<<<<<<< HEAD
 	local option_idx = vim.api.nvim_win_get_cursor(0)[1]
 	local option_name = options.values.order[option_idx]
 	local current_value = options.values[option_name]
@@ -359,6 +515,131 @@ local toggle_option_under_cursor = function()
 	end
 	populate_options_buf()
 	update_preview()
+||||||| parent of 7f46c01 (UI implementation (new commit, without changes in formatting))
+  local option_idx = vim.api.nvim_win_get_cursor(0)[1]
+  local option_name = options.values.order[option_idx]
+  local current_value = options.values[option_name]
+  if type(current_value) == 'boolean' then
+    options.values[option_name] = not current_value
+    if option_name == 'preview' then
+      if not current_value then
+        open_preview()
+      else
+        close_preview()
+      end
+    end
+  else
+    if option_name == 'buffer' then
+      if options.values.cwd then
+        options.values.cwd = false
+      else
+        vim.ui.select(list_loaded_bufs(), {
+          prompt = 'Pick buffer to apply substitutions:',
+          format_item = function(buf)
+            return string.format('%d: %s', buf, vim.api.nvim_buf_get_name(buf))
+          end,
+        }, function(buf)
+            if buf then
+              options.values.buffer = buf
+              populate_options_buf()
+              update_preview()
+            end
+        end)
+        return
+      end
+    elseif option_name == 'dir' then
+      if not options.values.cwd then
+        options.values.cwd = true
+      else
+        vim.ui.input({prompt = 'Pick dir', default = options.values.dir}, function(dir)
+          if dir then
+            options.values.dir = dir
+              populate_options_buf()
+              update_preview()
+          end
+        end)
+        return
+      end
+    elseif option_name == 'files' then
+      if not options.values.cwd then
+        options.values.cwd = true
+      else
+        vim.ui.input({prompt = 'Pick pattern for files', default = options.values.files}, function(pattern)
+          if pattern then
+            options.values.files = pattern
+              populate_options_buf()
+              update_preview()
+          end
+        end)
+        return
+      end
+    end
+  end
+  populate_options_buf()
+  update_preview()
+=======
+  local option_idx = vim.api.nvim_win_get_cursor(0)[1]
+  local option_name = options.values.order[option_idx]
+  local current_value = options.values[option_name]
+  if type(current_value) == 'boolean' then
+    options.values[option_name] = not current_value
+    if option_name == 'preview' then
+      if not current_value then
+        open_preview()
+      else
+        close_preview()
+      end
+    end
+  else
+    if option_name == 'buffer' then
+      if options.values.cwd then
+        options.values.cwd = false
+      else
+        vim.ui.select(list_loaded_bufs(), {
+          prompt = 'Pick buffer to apply substitutions:',
+          format_item = function(buf)
+            return string.format('%d: %s', buf, vim.api.nvim_buf_get_name(buf))
+          end,
+        }, function(buf)
+          if buf then
+            options.values.buffer = buf
+            populate_options_buf()
+            update_preview()
+          end
+        end)
+        return
+      end
+    elseif option_name == 'dir' then
+      if not options.values.cwd then
+        options.values.cwd = true
+      else
+        vim.ui.input({prompt = 'Pick dir', default = options.values.dir}, function(dir)
+          if dir then
+            options.values.dir = dir
+            populate_options_buf()
+            update_preview()
+          end
+        end)
+        return
+      end
+    elseif option_name == 'files' then
+      if not options.values.cwd then
+        options.values.cwd = true
+      else
+        vim.ui.input({prompt = 'Pick pattern for files', default = options.values.files}, function(pattern)
+          if pattern then
+            options.values.files = pattern
+            populate_options_buf()
+            update_preview()
+          end
+        end)
+        return
+      end
+    end
+  end
+  populate_options_buf()
+  update_preview()
+>>>>>>> 7f46c01 (UI implementation (new commit, without changes in formatting))
 end
 
 local noautocmd = function(ignore, callback)
@@ -427,6 +708,7 @@ M.open = function(opts)
 	end
 	populate_options_buf()
 
+<<<<<<< HEAD
 	local ui_positions = make_ui_positions(options.values)
 	wins.patterns = vim.api.nvim_open_win(bufs.patterns, true, {
 		relative = "editor",
@@ -467,6 +749,97 @@ M.open = function(opts)
 		zindex = 10,
 	})
 	other_win[wins.options] = wins.options
+||||||| parent of 7f46c01 (UI implementation (new commit, without changes in formatting))
+  local ui_positions = make_ui_positions(options.values)
+  wins.patterns = vim.api.nvim_open_win(bufs.patterns, true, {
+    relative = 'editor',
+    width = options.values.patterns_width,
+    height = options.values.patterns_height,
+    row = ui_positions.patterns.row,
+    col = ui_positions.patterns.col,
+    style = 'minimal',
+    border = {"┏", "━" ,"┳", "┃", "┻", "━", "┗", "┃"},
+    title = {{'patterns', 'Number'}},
+    title_pos = 'center',
+    zindex = 10,
+  })
+  wins.replacements = vim.api.nvim_open_win(bufs.replacements, false, {
+    relative = 'editor',
+    width = options.values.patterns_width,
+    height = options.values.patterns_height,
+    row = ui_positions.replacements.row,
+    col = ui_positions.replacements.col,
+    style = 'minimal',
+    border = {"┳", "━" ,"┳", "┃", "┻", "━", "┻", "┃"},
+    title = {{'replacements', 'Number'}},
+    title_pos = 'center',
+    zindex = 10,
+  })
+  other_win[wins.patterns] = wins.replacements
+  other_win[wins.replacements] = wins.patterns
+  wins.options = vim.api.nvim_open_win(bufs.options, false, {
+    relative = 'editor',
+    width = options.values.options_width,
+    height = options.values.patterns_height,
+    row = ui_positions.options.row,
+    col = ui_positions.options.col,
+    style = 'minimal',
+    border = {"┳", "━" ,"┓", "┃", "┛", "━", "┻", "┃"},
+    title = {{'options', 'Comment'}},
+    title_pos = 'center',
+    zindex = 10,
+  })
+  vim.api.nvim_win_set_option(wins.options, 'wrap', false)
+  if options.values.preview then
+    open_preview()
+  end
+=======
+  local ui_positions = make_ui_positions(options.values)
+  wins.patterns = vim.api.nvim_open_win(bufs.patterns, true, {
+    relative = 'editor',
+    width = options.values.patterns_width,
+    height = options.values.patterns_height,
+    row = ui_positions.patterns.row,
+    col = ui_positions.patterns.col,
+    style = 'minimal',
+    border = {"┏", "━" ,"┳", "┃", "┻", "━", "┗", "┃"},
+    title = {{'patterns', 'Number'}},
+    title_pos = 'center',
+    zindex = 10,
+  })
+  wins.replacements = vim.api.nvim_open_win(bufs.replacements, false, {
+    relative = 'editor',
+    width = options.values.patterns_width,
+    height = options.values.patterns_height,
+    row = ui_positions.replacements.row,
+    col = ui_positions.replacements.col,
+    style = 'minimal',
+    border = {"┳", "━" ,"┳", "┃", "┻", "━", "┻", "┃"},
+    title = {{'replacements', 'Number'}},
+    title_pos = 'center',
+    zindex = 10,
+  })
+  other_win[wins.patterns] = wins.replacements
+  other_win[wins.replacements] = wins.patterns
+  wins.options = vim.api.nvim_open_win(bufs.options, false, {
+    relative = 'editor',
+    width = options.values.options_width,
+    height = options.values.patterns_height,
+    row = ui_positions.options.row,
+    col = ui_positions.options.col,
+    style = 'minimal',
+    border = {"┳", "━" ,"┓", "┃", "┛", "━", "┻", "┃"},
+    title = {{'options', 'Comment'}},
+    title_pos = 'center',
+    zindex = 10,
+  })
+  other_win[wins.options] = wins.options
+
+  vim.api.nvim_win_set_option(wins.options, 'wrap', false)
+  if options.values.preview then
+    open_preview()
+  end
+>>>>>>> 7f46c01 (UI implementation (new commit, without changes in formatting))
 
 	vim.api.nvim_win_set_option(wins.options, "wrap", false)
 	if options.values.preview then
